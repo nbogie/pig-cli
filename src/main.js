@@ -1,15 +1,22 @@
-const { Confirm } = require("enquirer");
-const { AnyKeyPrompt, WaitForAnyKey } = require("./AnyKeyPrompt");
-const colors = require("ansi-colors");
+//@ts-expect-error type doesn't mention Confirm export but it's there.
 
-const chalk = require("chalk"); //v4 for commonJS module version
+const { Confirm } = require("enquirer");
+const { WaitForAnyKey } = require("./AnyKeyPrompt");
+const colors = require("ansi-colors");
+const chalk = require("chalk"); //use v4 for commonJS module version
+
+/**
+ * @typedef {"p1"|"p2"} Player
+ * @typedef {{p1:number, p2:number}} Scores
+ */
 
 async function main() {
-    const scoreRequiredToWin = 30;
+    const scoreRequiredToWin = 10;
 
     showTitlePage(scoreRequiredToWin);
 
     let scores = { p1: 0, p2: 0 };
+    /** @type {Player} */
     let whoseTurnIsIt = "p1";
 
     while (scores.p1 < scoreRequiredToWin && scores.p2 < scoreRequiredToWin) {
@@ -24,6 +31,15 @@ async function main() {
     showFinalScores(scores);
 }
 
+/**
+ *
+ * @param {Player} whoseTurnIsIt
+ * @param {Scores} scores
+ * @returns {Promise<
+ *   { outcome: "bank", newScores:Scores }
+ * | { outcome: "bust", newScores:Scores }
+ * >}
+ */
 async function playOneTurn(whoseTurnIsIt, scores) {
     const bankedScore = scores[whoseTurnIsIt];
 
@@ -78,7 +94,9 @@ async function wantsToContinue(whoseTurnIsIt) {
     });
     return await prompt.run();
 }
-
+/**
+ * @returns {void}
+ * */
 function showTitlePage(scoreRequiredToWin) {
     console.log(chalk.black.bgRed.bold(padCentre("=", 50, "=")));
     console.log(
@@ -89,7 +107,7 @@ function showTitlePage(scoreRequiredToWin) {
     console.log(
         chalk.black.bgRed.bold(
             padCentre(
-                "It is first to " + scoreRequiredToWin + ".......",
+                "First to " + scoreRequiredToWin + " points wins",
                 50,
                 " "
             )
@@ -101,12 +119,18 @@ function showTitlePage(scoreRequiredToWin) {
 function showFinalScores(scores) {
     const winner = whoWon(scores);
     bannerForPlayer(`!!!! ${winner} won !!!`, whoWon(scores));
-    console.log(chalk.bgWhite.black(" = Final Scores: ".padEnd(30) + " = "));
+    console.log(chalk.bgWhite.black(padCentre("Final Scores", 50, "=")));
+    const p1Decoration = winner === "p1" ? "🌈" : "🤷";
+    const p2Decoration = winner === "p2" ? "🌈" : "🤷";
     console.log(
-        chalk.bgWhite.black((" = P1: " + scores.p1).padEnd(30) + " = ")
+        chalk.bgWhite.black(
+            padCentre(p1Decoration + "P1: " + scores.p1, 50, "=")
+        )
     );
     console.log(
-        chalk.bgWhite.black((" = P2: " + scores.p2).padEnd(30) + " = ")
+        chalk.bgWhite.black(
+            padCentre(p2Decoration + "P2: " + scores.p2, 50, "=")
+        )
     );
 }
 
