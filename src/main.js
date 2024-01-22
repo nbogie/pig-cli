@@ -1,4 +1,5 @@
 const { Confirm } = require("enquirer");
+const { AnyKeyPrompt, WaitForAnyKey } = require("./AnyKeyPrompt");
 const colors = require("ansi-colors");
 
 const chalk = require("chalk"); //v4 for commonJS module version
@@ -52,10 +53,10 @@ async function playOneTurn(whoseTurnIsIt, scores) {
                       bankedScore)
         );
     } while (!isBust && (await wantsToContinue(whoseTurnIsIt)));
-    console.log("stopped. ", { isBust, runningTotal });
     if (!isBust) {
         return { outcome: "bank", amount: runningTotal };
     } else {
+        await WaitForAnyKey();
         return { outcome: "bust" };
     }
 }
