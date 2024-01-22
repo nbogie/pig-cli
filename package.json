@@ -1,0 +1,14 @@
+{
+    "name": "pig-cli",
+    "version": "1.0.0",
+    "main": "index.js",
+    "author": "nbogie",
+    "license": "MIT",
+    "scripts": {
+        "start": "node src/main.js"
+    },
+    "dependencies": {
+        "chalk": "4.1.2",
+        "enquirer": "^2.4.1"
+    }
+}
