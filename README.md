@@ -19,3 +19,5 @@ The next most important function to study would likely be [playOneTurn](https://
 The JSDoc type definitions in [src/types.js](src/types.js) will help you understand the references to Player, Scores, and TurnOutcome.
 
 Retreat where necessary and re-celebrate understanding the top level code!
+
+(Ignore the custom Enquirer prompt in `AnyKeyPrompt.js`.  (I had chatgpt write this bit quickly for me - no guarantees here).)
