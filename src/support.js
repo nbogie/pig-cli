@@ -181,6 +181,15 @@ function whoWon(scores) {
 }
 
 /**
+ * Return the next player to go after the given one
+ * @param {Player} currentPlayer
+ * @returns {Player} next player in sequence
+ */
+function nextPlayer(currentPlayer) {
+    return currentPlayer === "p1" ? "p2" : "p1";
+}
+
+/**
  * Distributes padding evenly around the given string.
  * @param {string} str string to pad
  * @param {number} targetLength target length of total output string (original str + padding)
@@ -207,4 +216,5 @@ module.exports = {
     banner,
     whoWon,
     playOneTurn,
+    nextPlayer,
 };
