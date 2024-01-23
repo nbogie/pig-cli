@@ -59,11 +59,11 @@ async function playOneTurn(currentPlayer, scores) {
 }
 
 /**
- * return a new score object, adding running total to the previous score of the player whose turn it is.
- * @param {Scores} scores
+ * return a new score object, adding running total to the previous score of the indicated current player.
+ * @param {Scores} scores previous scores object
  * @param {Player} currentPlayer
- * @param {number} runningTotal
- * @returns  {Scores} new scores object
+ * @param {number} runningTotal current player's running total to be banked
+ * @returns {Scores} new scores object
  */
 function bankToScore(scores, currentPlayer, runningTotal) {
     return {
