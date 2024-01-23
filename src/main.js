@@ -28,8 +28,8 @@ async function main() {
     let currentPlayer = "p1";
 
     while (scores.p1 < scoreRequiredToWin && scores.p2 < scoreRequiredToWin) {
-        const { newScores } = await playOneTurn(currentPlayer, scores);
-        scores = newScores; //replace the current scores
+        const turnOutcome = await playOneTurn(currentPlayer, scores);
+        scores = turnOutcome.newScores; //replace the current scores
         currentPlayer = nextPlayer(currentPlayer);
     }
     showFinalScores(scores);
