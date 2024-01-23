@@ -10,4 +10,6 @@ Start reading in [src/main.js](src/main.js).
 
 Celebrate if you understand that much and descend into other files only as much as you care to!
 
+The next most important function to study would likely be `playOneTurn` in [src/support.js](src/support.js)
+
 Retreat where necessary and re-celebrate understanding the top level code!
