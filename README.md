@@ -4,6 +4,8 @@ Uses the libraries enquirer (for prompts) and chalk (for styled terminal output)
 
 ## How to read this code (for new programmers)
 
+This code makes use of functions which return JavaScript promises, and uses async/await syntax.  It is suggested you have some understanding of both of those as a pre-requisite.
+
 Start reading in [src/main.js](src/main.js).
 
 Celebrate if you understand that much and descend into other files only as much as you care to!
