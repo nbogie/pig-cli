@@ -1,6 +1,10 @@
+# The game of Pig
+
 An quick node.js implementation of the game of Pig on the terminal.
 
 Uses the libraries enquirer (for prompts) and chalk (for styled terminal output).
+
+If you like, you can read more about the game here: http://cs.gettysburg.edu/projects/pig/ and [play it online against a computer](http://cs.gettysburg.edu/projects/pig/piggame.html).
 
 ## How to read this code (for new programmers)
 
