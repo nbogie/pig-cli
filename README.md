@@ -2,7 +2,7 @@
 
 An quick node.js implementation of the game of Pig on the terminal.
 
-Uses the libraries enquirer (for prompts) and chalk (for styled terminal output).
+Uses the libraries [enquirer](https://www.npmjs.com/package/enquirer) (for prompts) and [chalk (v4)](https://www.npmjs.com/package/chalk) (for styled terminal output).
 
 If you like, you can read more about the game here: http://cs.gettysburg.edu/projects/pig/ and [play it online against a computer](http://cs.gettysburg.edu/projects/pig/piggame.html).
 
