@@ -9,6 +9,7 @@ function WaitForAnyKey(message) {
     return prompt.run();
 }
 
+//Ignore the implementation of this custom prompt for Enquirer
 class AnyKeyPrompt extends Prompt {
     constructor(options = {}) {
         super(options);
