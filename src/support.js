@@ -42,11 +42,11 @@ async function playOneTurn(currentPlayer, scores) {
     } while (!isBust && (await wantsToContinue(currentPlayer)));
 
     const newScores = isBust
-        ? { ...scores } //copy of previous scores
+        ? { ...scores } //a copy of previous scores, rather than the same reference.
         : bankToScore(scores, currentPlayer, runningTotal);
 
     bannerForPlayer(
-        `Turn over.  Scores are p1:${newScores.p1} v p2:${newScores.p2}`,
+        `Turn is Over.  Scores are p1:${newScores.p1} v p2:${newScores.p2}`,
         currentPlayer
     );
 
