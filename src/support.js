@@ -2,12 +2,75 @@ const colors = require("ansi-colors");
 const chalk = require("chalk"); //use v4 for commonJS module version
 //@ts-expect-error type doesn't mention Confirm export but it's there.
 const { Confirm } = require("enquirer");
+const { WaitForAnyKey } = require("./AnyKeyPrompt");
 
 /**
  * @typedef {import('./types').Player} Player
  * @typedef {import('./types').Scores} Scores
+ * @typedef {import('./types').TurnOutcome} TurnOutcome
+
  */
 
+/**
+ * Plays out one turn of the game of pig (until a player banks or goes bust)
+ * and returns a promise resolving to the appropriate new scores for the game.
+ * @param {Player} currentPlayer
+ * @param {Scores} scores current scores before starting this turn
+ * @returns {Promise<TurnOutcome>}
+ */
+async function playOneTurn(currentPlayer, scores) {
+    const bankedScore = scores[currentPlayer];
+
+    bannerForPlayer("Your Turn, " + currentPlayer, currentPlayer);
+
+    let isBust = false;
+    let runningTotal = 0;
+    do {
+        const dieResult = rollDie();
+        isBust = dieResult === 1;
+        runningTotal += dieResult;
+        console.log(
+            currentPlayer +
+                ", you rolled a: " +
+                chalk.bgWhite.black.bold(" " + dieResult + " ")
+        );
+        console.log(
+            isBust
+                ? "You are bust!"
+                : `You could bank: ${runningTotal}, adding to your existing ${bankedScore}`
+        );
+    } while (!isBust && (await wantsToContinue(currentPlayer)));
+
+    const newScores = isBust
+        ? { ...scores } //copy of previous scores
+        : bankToScore(scores, currentPlayer, runningTotal);
+
+    bannerForPlayer(
+        `Turn over.  Scores are p1:${newScores.p1} v p2:${newScores.p2}`,
+        currentPlayer
+    );
+
+    if (!isBust) {
+        return { outcome: "bank", newScores };
+    } else {
+        await WaitForAnyKey();
+        return { outcome: "bust", newScores };
+    }
+}
+
+/**
+ * return a new score object, adding running total to the previous score of the player whose turn it is.
+ * @param {Scores} scores
+ * @param {Player} currentPlayer
+ * @param {number} runningTotal
+ * @returns  {Scores} new scores object
+ */
+function bankToScore(scores, currentPlayer, runningTotal) {
+    return {
+        ...scores,
+        [currentPlayer]: scores[currentPlayer] + runningTotal,
+    };
+}
 /**
  * @returns {number} an integer between 1 and 6, representing a single 6-sided die roll
  */
@@ -16,10 +79,10 @@ function rollDie() {
 }
 
 /**
- * @param {Player} whoseTurnIsIt
+ * @param {Player} currentPlayer
  */
-async function wantsToContinue(whoseTurnIsIt) {
-    const colour = whoseTurnIsIt === "p1" ? colors.yellow : colors.red;
+async function wantsToContinue(currentPlayer) {
+    const colour = currentPlayer === "p1" ? colors.yellow : colors.red;
     const prompt = new Confirm({
         name: "question",
         message: "Want to push your luck?",
@@ -51,26 +114,37 @@ function showTitlePage(scoreRequiredToWin) {
     console.log(chalk.black.bgRed.bold(padCentre("=", 50, "=")));
     console.log("\n\n");
 }
+
 /**
  *
  * @param {Scores} scores
  */
 function showFinalScores(scores) {
     const winner = whoWon(scores);
-    bannerForPlayer(`!!!! ${winner} won !!!`, whoWon(scores));
-    console.log(chalk.bgWhite.black(padCentre("Final Scores", 50, "=")));
+    banner(` !!!! ${winner} won !!!! `, bgColourForPlayer(winner), "-");
+    console.log(chalk.bgWhite.black(padCentre(" Final Scores ", 50, "=")));
     const p1Decoration = winner === "p1" ? "🌈" : "🤷";
     const p2Decoration = winner === "p2" ? "🌈" : "🤷";
     console.log(
         chalk.bgWhite.black(
-            padCentre(p1Decoration + "P1: " + scores.p1, 50, "=")
+            padCentre(` ${p1Decoration} P1: ${scores.p1} `, 50, "=")
         )
     );
     console.log(
         chalk.bgWhite.black(
-            padCentre(p2Decoration + "P2: " + scores.p2, 50, "=")
+            padCentre(` ${p2Decoration} P2: ${scores.p2} `, 50, "=")
         )
     );
+    console.log(chalk.bgWhite.black(padCentre("", 50, "=")));
+}
+
+/**
+ *
+ * @param {Player} player
+ * @returns {string} bg color function name for chalk for background of message.
+ */
+function bgColourForPlayer(player) {
+    return player === "p1" ? "bgRed" : "bgYellow";
 }
 
 /**
@@ -79,15 +153,25 @@ function showFinalScores(scores) {
  * @param {Player} playerName
  */
 function bannerForPlayer(message, playerName) {
-    const fnName = playerName === "p1" ? "bgRed" : "bgYellow";
-
+    const fnName = bgColourForPlayer(playerName);
     console.log(
         chalk.black[fnName].bold(
-            padCentre(playerName + ": " + message, 50, "=")
+            padCentre(" " + playerName + ": " + message + " ", 50, "=")
         )
     );
 }
 
+/**
+ *
+ * @param {string} message
+ * @param {string} colour
+ * @param {string} padChar
+ */
+function banner(message, colour, padChar = "=") {
+    console.log(
+        chalk.black[colour].bold(padCentre(" " + message + " ", 50, padChar))
+    );
+}
 /**
  *@param {Scores} scores
  * @returns {Player} name of player who won */
@@ -120,5 +204,7 @@ module.exports = {
     showTitlePage,
     showFinalScores,
     bannerForPlayer,
+    banner,
     whoWon,
+    playOneTurn,
 };
